@@ -1,4 +1,4 @@
-package com.ocupe;
+package com.ocupe.viewModels;
 
 public class UserProfile {
     private int userId;

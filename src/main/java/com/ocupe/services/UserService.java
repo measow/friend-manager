@@ -1,6 +1,6 @@
 package com.ocupe.services;
 
-import com.ocupe.UserProfile;
+import com.ocupe.viewModels.UserProfile;
 import com.ocupe.models.Friendship;
 import com.ocupe.models.User;
 import com.ocupe.repositories.UserRepository;
@@ -51,7 +51,6 @@ public class UserService {
         }
         return result;
     }
-
 
     public List<UserProfile> getOthersFor(int userId) {
         List<UserProfile> result = new ArrayList<>();

@@ -23,7 +23,6 @@ public class User {
     @NotBlank
     private String password;
 
-    @NotBlank
     private Date dateOfBirth;
 
     public int getUserId() {
