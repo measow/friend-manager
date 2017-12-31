@@ -24,4 +24,22 @@ public class UserProfile {
     public void setAlias(String alias) {
         this.alias = alias;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserProfile that = (UserProfile) o;
+
+        if (userId != that.userId) return false;
+        return alias.equals(that.alias);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userId;
+        result = 31 * result + alias.hashCode();
+        return result;
+    }
 }

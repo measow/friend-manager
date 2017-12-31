@@ -60,7 +60,7 @@ public class UserService {
         List<UserProfile> friends = this.getFriendsFor(userId);
 
         for (UserProfile userProfile : allUsers) {
-            if (!friends.contains(userProfile)) {
+            if (userProfile.getUserId() != userId && !friends.contains(userProfile)) {
                 result.add(userProfile);
             }
         }
