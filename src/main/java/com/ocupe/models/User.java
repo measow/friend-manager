@@ -9,27 +9,21 @@ import java.util.Date;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "UserId")
     private int userId;
 
     @NotBlank
-    @Column(name = "Name")
     private String name;
 
     @NotBlank
-    @Column(name = "Alias")
     private String alias;
 
     @NotBlank
-    @Column(name = "Email")
     private String email;
 
     @NotBlank
-    @Column(name = "Password")
     private String password;
 
     @NotBlank
-    @Column(name = "DateOfBirth")
     private Date dateOfBirth;
 
     public int getUserId() {

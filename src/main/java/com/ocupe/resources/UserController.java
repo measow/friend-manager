@@ -24,6 +24,9 @@ public class UserController {
     // Get all users
     @GetMapping("/users")
     public List<User> getAllUsers() {
+
+
+
         return this.userRepository.findAll();
     }
 
@@ -33,7 +36,7 @@ public class UserController {
         return this.userRepository.findOne(userId);
     }
 
-    // Get friends for user
+    /*// Get friends for user
     @GetMapping("/users/{userId}/friends")
     public List<User> getFriendsFor(@PathVariable int userId) {
         return this.userRepository.findFriendsFor(userId);
@@ -43,5 +46,5 @@ public class UserController {
     @GetMapping("/users/{userId}/others")
     public List<User> getOthersFor(@PathVariable int userId) {
         return this.userRepository.findOthersFor(userId);
-    }
+    }*/
 }
