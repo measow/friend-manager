@@ -1,9 +1,10 @@
 package com.ocupe.resources;
 
+import com.ocupe.UserProfile;
+import com.ocupe.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
-import java.util.List;
 import com.ocupe.models.*;
 import com.ocupe.repositories.*;
 
@@ -17,6 +18,9 @@ public class UserController {
     @Autowired
     FriendshipRepository friendshipRepository;
 
+    @Autowired
+    UserService userService;
+
     // Create new user
     @PostMapping("/users")
     public void createUser(@Valid @RequestBody User newUser) {
@@ -25,31 +29,25 @@ public class UserController {
 
     // Get all users
     @GetMapping("/users")
-    public List<User> getAllUsers() {
-        return this.userRepository.findAll();
-    }
-
-    // Get all friendships
-    @GetMapping("/friendships")
-    public List<Friendship> getAllFriendships() {
-        return this.friendshipRepository.findFriendshipsFor(5);
+    public Iterable<UserProfile> getAllUsers() {
+        return this.userService.getAll();
     }
 
     // Get a single user
     @GetMapping("/users/{userId}")
-    public User getSingleUser(@PathVariable int userId) {
-        return this.userRepository.findOne(userId);
+    public UserProfile getSingleUser(@PathVariable int userId) {
+        return this.userService.getUser(userId);
     }
 
-    /*// Get friends for user
+    // Get friends for user
     @GetMapping("/users/{userId}/friends")
-    public List<User> getFriendsFor(@PathVariable int userId) {
-        return this.userRepository.findFriendsFor(userId);
+    public Iterable<UserProfile> getFriendsFor(@PathVariable int userId) {
+        return this.userService.getFriendsFor(userId);
     }
 
     // Get others (users excluding friends) for user
     @GetMapping("/users/{userId}/others")
-    public List<User> getOthersFor(@PathVariable int userId) {
-        return this.userRepository.findOthersFor(userId);
-    }*/
+    public Iterable<UserProfile> getOthersFor(@PathVariable int userId) {
+        return this.userService.getOthersFor(userId);
+    }
 }
