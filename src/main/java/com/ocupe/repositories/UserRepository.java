@@ -8,9 +8,4 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
-    // TODO: specify query
-    //List<User> findFriendsFor(int userId);
-    // TODO: specify query
-    //List<User> findOthersFor(int userId);
-}
+public interface UserRepository extends JpaRepository<User, Integer> {}

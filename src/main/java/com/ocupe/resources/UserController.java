@@ -1,12 +1,11 @@
 package com.ocupe.resources;
 
-import com.ocupe.models.User;
-import com.ocupe.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.List;
+import com.ocupe.models.*;
+import com.ocupe.repositories.*;
 
 @RestController
 @RequestMapping("/api")
@@ -14,6 +13,9 @@ public class UserController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    FriendshipRepository friendshipRepository;
 
     // Create new user
     @PostMapping("/users")
@@ -24,10 +26,13 @@ public class UserController {
     // Get all users
     @GetMapping("/users")
     public List<User> getAllUsers() {
-
-
-
         return this.userRepository.findAll();
+    }
+
+    // Get all friendships
+    @GetMapping("/friendships")
+    public List<Friendship> getAllFriendships() {
+        return this.friendshipRepository.findFriendshipsFor(5);
     }
 
     // Get a single user
