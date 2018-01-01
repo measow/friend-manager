@@ -1,6 +1,7 @@
 package com.ocupe.resources;
 
-import com.ocupe.viewModels.UserProfile;
+import com.ocupe.viewModels.FriendView;
+import com.ocupe.viewModels.UserProfileView;
 import com.ocupe.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,9 @@ import javax.validation.Valid;
 
 import com.ocupe.models.*;
 import com.ocupe.repositories.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -24,47 +28,110 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    // Get all users
+    @GetMapping("/users")
+    public Iterable<UserProfileView> getAllUsers() {
+        List<UserProfileView> result = new ArrayList<>();
+        List<User> allUsers = this.userRepository.findAll();
+
+        for (User user : allUsers) {
+            result.add(new UserProfileView(user.getUserId(), user.getAlias()));
+        }
+
+        return result;
+    }
+
     // Create new user
     @PostMapping("/users")
     public void createUser(@Valid @RequestBody User newUser) {
         this.userRepository.save(newUser);
     }
 
-    // Get all users
-    @GetMapping("/users")
-    public Iterable<UserProfile> getAllUsers() {
-        return this.userService.getAll();
-    }
-
-    // Get a single user
+    // Get a single user profile
     @GetMapping("/users/{userId}")
-    public UserProfile getSingleUser(@PathVariable int userId) {
-        return this.userService.getUser(userId);
+    public UserProfileView getSingleUser(@PathVariable int userId) {
+        User user = this.userRepository.findOne(userId);
+        return new UserProfileView(user.getUserId(), user.getAlias());
     }
 
-    // Get friends for user
+    // Get friends for current user
     @GetMapping("/users/{userId}/friends")
-    public Iterable<UserProfile> getFriendsFor(@PathVariable int userId) {
-        return this.userService.getFriendsFor(userId);
+    public ResponseEntity getFriendsFor(@PathVariable int userId) {
+
+        List<FriendView> result = new ArrayList<>();
+        User currentUser = this.userRepository.getOne(userId);
+
+        if(currentUser == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        List<Friendship> requesterFriendships = this.friendshipRepository.findFriendshipsRequestedFrom(userId);
+        List<Friendship> requesteeFriendships = this.friendshipRepository.findFriendshipsRequestedTo(userId);
+
+        for (Friendship friendship : requesterFriendships) {
+            User friend = friendship.getRequestee();
+            result.add(new FriendView(friendship.getFriendshipId(), friend.getUserId(), friend.getAlias()));
+        }
+
+        for (Friendship friendship : requesteeFriendships) {
+            User friend = friendship.getRequester();
+            result.add(new FriendView(friendship.getFriendshipId(), friend.getUserId(), friend.getAlias()));
+        }
+
+        return new ResponseEntity(result, HttpStatus.OK);
     }
 
-    // Create a friend
+    // Add a friend to current user
     @PostMapping("/users/{userId}/friends/{friendId}")
     public ResponseEntity createFriend(@PathVariable int userId, @PathVariable int friendId) {
-        // TODO: find user, add friend
-        return new ResponseEntity(HttpStatus.OK);
-    }
 
-    // Delete a friend
-    @DeleteMapping("/users/{userId}/friends/{friendId}")
-    public ResponseEntity deleteFriend(@PathVariable int userId, @PathVariable int friendId) {
-        // TODO: find user, delete friend
-        return new ResponseEntity(HttpStatus.OK);
+        User currentUser = this.userRepository.getOne(userId);
+        User friend = this.userRepository.getOne(friendId);
+
+        if(currentUser == null || friend == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        List<User> friends = this.userService.getFriendsFor(currentUser.getUserId());
+
+        // TODO: investigate why equals override doesn't work
+        boolean friendAlreadyExists = false;
+        for (User aFriend : friends) {
+            if(aFriend.getUserId() == friend.getUserId()) {
+                friendAlreadyExists = true;
+                break;
+            }
+        }
+
+        if(friendAlreadyExists) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        else {
+            this.friendshipRepository.save(new Friendship(currentUser, friend));
+            return new ResponseEntity(HttpStatus.CREATED);
+        }
     }
 
     // Get others (users excluding friends) for user
     @GetMapping("/users/{userId}/others")
-    public Iterable<UserProfile> getOthersFor(@PathVariable int userId) {
-        return this.userService.getOthersFor(userId);
+    public ResponseEntity getOthersFor(@PathVariable int userId) {
+
+        User currentUser = this.userRepository.getOne(userId);
+
+        if(currentUser == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        List<UserProfileView> result = new ArrayList<>();
+        List<User> allUsers = this.userRepository.findAll();
+        List<User> friends = this.userService.getFriendsFor(currentUser.getUserId());
+
+        for (User user : allUsers) {
+            if (user != currentUser && !friends.contains(user)) {
+                result.add(new UserProfileView(user.getUserId(), user.getAlias()));
+            }
+        }
+
+        return new ResponseEntity(result, HttpStatus.OK);
     }
 }

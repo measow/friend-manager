@@ -72,4 +72,21 @@ public class User {
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof User){
+            String toCompare = ((User) o).email;
+            return email.equals(toCompare);
+        }
+        return false;
+    }
+
+
+
+
+    @Override
+    public int hashCode() {
+        return email.hashCode();
+    }
 }

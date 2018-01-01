@@ -2,7 +2,7 @@ package com.ocupe.viewModels;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-public class UserCredentials {
+public class UserCredentialsView {
 
     @NotBlank
     private String email;

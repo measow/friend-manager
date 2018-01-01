@@ -17,6 +17,13 @@ public class Friendship {
     @JoinColumn(referencedColumnName = "userId")
     private User requestee;
 
+    public Friendship() {}
+
+    public Friendship(User requester, User requestee) {
+        this.requester = requester;
+        this.requestee = requestee;
+    }
+
     public int getFriendshipId() {
         return friendshipId;
     }
