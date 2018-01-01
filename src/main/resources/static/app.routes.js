@@ -5,13 +5,13 @@
     function getRoutes($routeProvider) {
         $routeProvider
             .when('/', {
-                templateUrl : 'app/home.html'
+                templateUrl : 'app/dashboard.html'
             })
-            .when('/home', {
-                templateUrl : 'app/home.html'
+            .when('/home/:userId', {
+                template : '<fm-dashboard></fm-dashboard>'
             })
-            .when('/user-profile', {
-                templateUrl : 'app/user-profile.html'
+            .when('/user-profile/:userId', {
+                template : '<fm-user-profile></fm-user-profile>'
             })
             .when('/login', {
                 templateUrl : 'app/login.html'

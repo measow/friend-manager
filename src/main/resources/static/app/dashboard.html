@@ -1,0 +1,47 @@
+<h1>Hello, {{vm.userProfile.alias}}!</h1>
+<span>Here is the list of your friends:</span>
+<br/>
+<span ng-if="vm.friends.length == 0">You don't have friends yet.</span>
+<table class="table" ng-if="vm.friends.length > 0">
+    <thead>
+    <tr>
+        <th scope="col">Alias</th>
+        <th colspan="2" scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="friend in vm.friends">
+        <td>{{friend.alias}}</td>
+        <td><a href="#!/user-profile/{{friend.userId}}" class="btn btn-primary btn-sm active" role="button"
+               aria-pressed="true">View Profile</a>
+            &nbsp;
+            <button type="button" ng-click="vm.removeFriend(friend)" class="btn btn-sm btn-danger">Remove as Friend
+            </button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br/><br/><br/><br/><br/>
+
+<span>Other Users not on your friend's list:</span>
+<br/>
+<span ng-if="vm.others.length == 0">There are no others to list.</span>
+<table class="table" ng-if="vm.others.length > 0">
+    <thead>
+    <tr>
+        <th scope="col">Alias</th>
+        <th scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="other in vm.others">
+        <td><span ng-href="#!/user-profile/{{other.userId}}">{{other.alias}}</span></td>
+        <td>
+            <button type="button" ng-click="vm.addFriend(other)" class="btn btn-secondary">Add as Friend</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+

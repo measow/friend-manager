@@ -35,7 +35,7 @@ public class UserController {
         List<User> allUsers = this.userRepository.findAll();
 
         for (User user : allUsers) {
-            result.add(new UserProfileView(user.getUserId(), user.getAlias()));
+            result.add(new UserProfileView(user.getUserId(), user.getAlias(), user.getName(), user.getEmail()));
         }
 
         return result;
@@ -51,7 +51,7 @@ public class UserController {
     @GetMapping("/users/{userId}")
     public UserProfileView getSingleUser(@PathVariable int userId) {
         User user = this.userRepository.findOne(userId);
-        return new UserProfileView(user.getUserId(), user.getAlias());
+        return new UserProfileView(user.getUserId(), user.getAlias(), user.getName(), user.getEmail());
     }
 
     // Get friends for current user
@@ -107,8 +107,12 @@ public class UserController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         else {
-            this.friendshipRepository.save(new Friendship(currentUser, friend));
-            return new ResponseEntity(HttpStatus.CREATED);
+            Friendship newFriendship = new Friendship(currentUser, friend);
+            this.friendshipRepository.save(newFriendship);
+
+            return new ResponseEntity(
+                    new FriendView(newFriendship.getFriendshipId(), friend.getUserId(), friend.getAlias()),
+                    HttpStatus.CREATED);
         }
     }
 
@@ -128,7 +132,7 @@ public class UserController {
 
         for (User user : allUsers) {
             if (user != currentUser && !friends.contains(user)) {
-                result.add(new UserProfileView(user.getUserId(), user.getAlias()));
+                result.add(new UserProfileView(user.getUserId(), user.getAlias(), user.getName(), user.getEmail()));
             }
         }
 
