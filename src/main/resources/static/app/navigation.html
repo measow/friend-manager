@@ -1,0 +1,13 @@
+<nav class="navbar navbar-default navbar-static-top">
+    <div class="container" ng-if="vm.currentUser.isLoggedIn()">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#!/home">Friend Manager</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#!/home">Home</a></li>
+                <li><a ng-click="vm.logout()" href="#!/login">Logout</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>

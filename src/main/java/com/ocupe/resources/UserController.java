@@ -1,19 +1,18 @@
 package com.ocupe.resources;
 
-import com.ocupe.viewModels.FriendView;
-import com.ocupe.viewModels.UserProfileView;
-import com.ocupe.services.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
-
-import com.ocupe.models.*;
-import com.ocupe.repositories.*;
-
 import java.util.ArrayList;
 import java.util.List;
+import com.ocupe.models.*;
+import com.ocupe.repositories.*;
+import com.ocupe.viewModels.FriendView;
+import com.ocupe.viewModels.UserProfileView;
+import com.ocupe.services.UserService;
 
 @RestController
 @RequestMapping("/api")
@@ -28,6 +27,19 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    // Create new user
+    @PostMapping("/users")
+    public ResponseEntity<UserProfileView> createUser(@Valid @RequestBody User newUser) {
+        // TODO: add validation
+        UserProfileView result;
+        this.userRepository.save(newUser);
+
+        result = new UserProfileView(newUser.getUserId(), newUser.getAlias(),
+                newUser.getName(), newUser.getEmail(), newUser.getDateOfBirth());
+
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
     // Get all users
     @GetMapping("/users")
     public Iterable<UserProfileView> getAllUsers() {
@@ -40,12 +52,6 @@ public class UserController {
         }
 
         return result;
-    }
-
-    // Create new user
-    @PostMapping("/users")
-    public void createUser(@Valid @RequestBody User newUser) {
-        this.userRepository.save(newUser);
     }
 
     // Get a single user profile
