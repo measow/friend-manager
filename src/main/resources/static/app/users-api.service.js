@@ -7,12 +7,20 @@
     function getUsersApi($http) {
 
         return {
+            createUser: createUser,
             getUserProfile: getUserProfile,
             getFriendsFor: getFriendsFor,
             getOthersFor: getOthersFor,
             addFriend: addFriend,
             removeFriend: removeFriend
         };
+
+        function createUser(registration) {
+            return $http.post('/friend-manager/api/users', registration)
+                .then(function (response) {
+                    return response.data;
+                });
+        }
 
         function getUserProfile(userId) {
             return $http.get('/friend-manager/api/users/' + userId)

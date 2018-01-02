@@ -5,16 +5,16 @@
     function getRoutes($routeProvider) {
         $routeProvider
             .when('/', {
-                templateUrl : 'app/dashboard.html'
+                templateUrl: 'app/dashboard.html'
             })
-            .when('/home/:userId', {
-                template : '<fm-dashboard></fm-dashboard>'
+            .when('/home', {
+                template: '<fm-dashboard></fm-dashboard>'
             })
             .when('/user-profile/:userId', {
-                template : '<fm-user-profile></fm-user-profile>'
+                template: '<fm-user-profile></fm-user-profile>'
             })
             .when('/login', {
-                templateUrl : 'app/login.html'
+                template: '<fm-login></fm-login>'
             });
     }
 })(window.angular);

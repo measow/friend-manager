@@ -1,16 +1,20 @@
 package com.ocupe.viewModels;
 
+import java.util.Date;
+
 public class UserProfileView {
     private int userId;
     private String alias;
     private String name;
     private String email;
+    private Date dateOfBirth;
 
-    public UserProfileView(int userId, String alias, String name, String email) {
+    public UserProfileView(int userId, String alias, String name, String email, Date dateOfBirth) {
         this.userId = userId;
         this.alias = alias;
         this.name = name;
         this.email = email;
+        this.dateOfBirth = dateOfBirth;
     }
 
     public int getUserId() {
@@ -43,5 +47,13 @@ public class UserProfileView {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 }

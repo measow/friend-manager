@@ -35,7 +35,8 @@ public class UserController {
         List<User> allUsers = this.userRepository.findAll();
 
         for (User user : allUsers) {
-            result.add(new UserProfileView(user.getUserId(), user.getAlias(), user.getName(), user.getEmail()));
+            result.add(new UserProfileView(user.getUserId(), user.getAlias(),
+                    user.getName(), user.getEmail(), user.getDateOfBirth()));
         }
 
         return result;
@@ -51,18 +52,19 @@ public class UserController {
     @GetMapping("/users/{userId}")
     public UserProfileView getSingleUser(@PathVariable int userId) {
         User user = this.userRepository.findOne(userId);
-        return new UserProfileView(user.getUserId(), user.getAlias(), user.getName(), user.getEmail());
+        return new UserProfileView(user.getUserId(), user.getAlias(),
+                user.getName(), user.getEmail(), user.getDateOfBirth());
     }
 
     // Get friends for current user
     @GetMapping("/users/{userId}/friends")
-    public ResponseEntity getFriendsFor(@PathVariable int userId) {
+    public ResponseEntity<List<FriendView>> getFriendsFor(@PathVariable int userId) {
 
         List<FriendView> result = new ArrayList<>();
         User currentUser = this.userRepository.getOne(userId);
 
         if(currentUser == null) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         List<Friendship> requesterFriendships = this.friendshipRepository.findFriendshipsRequestedFrom(userId);
@@ -78,18 +80,18 @@ public class UserController {
             result.add(new FriendView(friendship.getFriendshipId(), friend.getUserId(), friend.getAlias()));
         }
 
-        return new ResponseEntity(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     // Add a friend to current user
     @PostMapping("/users/{userId}/friends/{friendId}")
-    public ResponseEntity createFriend(@PathVariable int userId, @PathVariable int friendId) {
+    public ResponseEntity<FriendView> createFriend(@PathVariable int userId, @PathVariable int friendId) {
 
         User currentUser = this.userRepository.getOne(userId);
         User friend = this.userRepository.getOne(friendId);
 
         if(currentUser == null || friend == null) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         List<User> friends = this.userService.getFriendsFor(currentUser.getUserId());
@@ -104,13 +106,13 @@ public class UserController {
         }
 
         if(friendAlreadyExists) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         else {
             Friendship newFriendship = new Friendship(currentUser, friend);
             this.friendshipRepository.save(newFriendship);
 
-            return new ResponseEntity(
+            return new ResponseEntity<>(
                     new FriendView(newFriendship.getFriendshipId(), friend.getUserId(), friend.getAlias()),
                     HttpStatus.CREATED);
         }
@@ -118,12 +120,12 @@ public class UserController {
 
     // Get others (users excluding friends) for user
     @GetMapping("/users/{userId}/others")
-    public ResponseEntity getOthersFor(@PathVariable int userId) {
+    public ResponseEntity<List<UserProfileView>> getOthersFor(@PathVariable int userId) {
 
         User currentUser = this.userRepository.getOne(userId);
 
         if(currentUser == null) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         List<UserProfileView> result = new ArrayList<>();
@@ -132,10 +134,11 @@ public class UserController {
 
         for (User user : allUsers) {
             if (user != currentUser && !friends.contains(user)) {
-                result.add(new UserProfileView(user.getUserId(), user.getAlias(), user.getName(), user.getEmail()));
+                result.add(new UserProfileView(user.getUserId(), user.getAlias(),
+                        user.getName(), user.getEmail(), user.getDateOfBirth()));
             }
         }
 
-        return new ResponseEntity(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

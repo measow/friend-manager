@@ -2,9 +2,9 @@
     'use strict';
     angular.module('app').directive('fmDashboard', getDashboard);
 
-    getDashboard.$inject = ['$routeParams', 'usersApi'];
+    getDashboard.$inject = ['usersApi', 'currentUser'];
 
-    function getDashboard($routeParams, usersApi) {
+    function getDashboard(usersApi, currentUser) {
         return {
             restrict: 'E',
             controller: DashboardController,
@@ -18,18 +18,14 @@
             vm.removeFriend = removeFriend;
             vm.friends = null;
             vm.others = null;
+            vm.userProfile = currentUser;
 
-            usersApi.getUserProfile($routeParams.userId)
-                .then(function (userProfile) {
-                    vm.userProfile = userProfile;
-                });
-
-            usersApi.getFriendsFor($routeParams.userId)
+            usersApi.getFriendsFor(currentUser.userId)
                 .then(function (friends) {
                     vm.friends = friends;
                 });
 
-            usersApi.getOthersFor($routeParams.userId)
+            usersApi.getOthersFor(currentUser.userId)
                 .then(function (others) {
                     vm.others = others;
                 });
